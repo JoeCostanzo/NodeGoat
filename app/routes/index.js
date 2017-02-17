@@ -1,28 +1,28 @@
-var SessionHandler = require("./session");
-var ProfileHandler = require("./profile");
-var BenefitsHandler = require("./benefits");
-var ContributionsHandler = require("./contributions");
-var AllocationsHandler = require("./allocations");
-var MemosHandler = require("./memos");
+import SessionHandler from "./session";
+import ProfileHandler from "./profile";
+import BenefitsHandler from "./benefits";
+import ContributionsHandler from "./contributions";
+import AllocationsHandler from "./allocations";
+import MemosHandler from "./memos";
 
-var ErrorHandler = require("./error").errorHandler;
+import { errorHandler } from "./error";
 
-var exports = function(app, db) {
+const exports = (app, db) => {
 
     "use strict";
 
-    var sessionHandler = new SessionHandler(db);
-    var profileHandler = new ProfileHandler(db);
-    var benefitsHandler = new BenefitsHandler(db);
-    var contributionsHandler = new ContributionsHandler(db);
-    var allocationsHandler = new AllocationsHandler(db);
-    var memosHandler = new MemosHandler(db);
+    const sessionHandler = new SessionHandler(db);
+    const profileHandler = new ProfileHandler(db);
+    const benefitsHandler = new BenefitsHandler(db);
+    const contributionsHandler = new ContributionsHandler(db);
+    const allocationsHandler = new AllocationsHandler(db);
+    const memosHandler = new MemosHandler(db);
 
     // Middleware to check if a user is logged in
-    var isLoggedIn = sessionHandler.isLoggedInMiddleware;
+    const isLoggedIn = sessionHandler.isLoggedInMiddleware;
 
     //Middleware to check if user has admin rights
-    var isAdmin = sessionHandler.isAdminUserMiddleware;
+    const isAdmin = sessionHandler.isAdminUserMiddleware;
 
     // The main page of the app
     app.get("/", sessionHandler.displayWelcomePage);
@@ -63,24 +63,17 @@ var exports = function(app, db) {
 
     // Memos Page
     app.get("/memos", isLoggedIn, memosHandler.displayMemos);
+    // Handle redirect for learning resources link
+    app.get("/learn", isLoggedIn, (req, res, next) => res.redirect(req.query.url)); // Insecure way to handle redirects by taking redirect url from query string
+
     app.post("/memos", isLoggedIn, memosHandler.addMemos);
 
     // Handle redirect for learning resources link
-    app.get("/learn", isLoggedIn, function(req, res, next) {
-        // Insecure way to handle redirects by taking redirect url from query string
-        return res.redirect(req.query.url);
-    });
-
-    // Handle redirect for learning resources link
-    app.get("/tutorial", function(req, res, next) {
-        return res.render("tutorial/a1");
-    });
-    app.get("/tutorial/:page", function(req, res, next) {
-        return res.render("tutorial/" + req.params.page);
-    });
+    app.get("/tutorial", (req, res, next) => res.render("tutorial/a1"));
+    app.get("/tutorial/:page", (req, res, next) => res.render("tutorial/" + req.params.page));
 
     // Error handling middleware
-    app.use(ErrorHandler);
+    app.use(errorHandler);
 };
 
 module.exports = exports;

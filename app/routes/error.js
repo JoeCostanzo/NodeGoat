@@ -1,15 +1,12 @@
 // Error handling middleware
 
-var errorHandler = function(err, req, res, next) {
+const errorHandler = (error, req, res, next) => {
+  "use strict";
 
-    "use strict";
-
-    console.error(err.message);
-    console.error(err.stack);
-    res.status(500);
-    res.render("error-template", {
-        error: err
-    });
+  console.error(err.message);
+  console.error(err.stack);
+  res.status(500);
+  res.render("error-template", {error});
 };
 
 exports.errorHandler = errorHandler;
