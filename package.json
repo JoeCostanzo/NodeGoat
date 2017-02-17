@@ -31,6 +31,7 @@
     "npm": "2.15.x"
   },
   "scripts": {
+    "postinstall": "npm run buildlib",
     "prestart": "npm run buildlib",
     "start": "node dist/server.js",
     "buildlib": "babel lib -d dist",
