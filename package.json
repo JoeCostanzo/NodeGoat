@@ -31,13 +31,13 @@
     "npm": "2.15.x"
   },
   "scripts": {
-    "postinstall": "npm run buildlib",
-    "prestart": "npm run buildlib",
+    "postinstall": "npm run build",
+    "prestart": "npm run build",
     "start": "node dist/server.js",
-    "buildlib": "babel lib -d dist",
+    "build": "babel lib -d dist && babel app/data -d dist/app/data && babel app/routes -d dist/app/routes",
     "dev": "nodemon lib/server.js --exec babel-node",
     "test": "babel-node node_modules/grunt-cli/bin/grunt test",
-    "dbreset": "npm run buildlib && babel-node node_modules/grunt-cli/bin/grunt db-reset:development"
+    "dbreset": "npm run build && babel-node node_modules/grunt-cli/bin/grunt db-reset:development"
   },
   "devDependencies": {
     "async": "^2.0.0-rc.4",
