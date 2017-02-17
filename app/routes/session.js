@@ -55,26 +55,22 @@ function SessionHandler(db) {
     const password = req.body.password;
 
     userDAO.validateLogin(userName, password, (err, user) => {
-      const errorMessage = "Invalid username and/or password";
-      const invalidUserNameErrorMessage = "Invalid username";
-      const invalidPasswordErrorMessage = "Invalid password";
+      const loginError = "Invalid username and/or password";
       if (err) {
         if (err.noSuchUser) {
           return res.render("login", {
-            userName: userName,
+            userName,
             password: "",
-            loginError: invalidUserNameErrorMessage
             //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
-            // loginError: errorMessage
+            loginError
           });
         }
         if (err.invalidPassword) {
           return res.render("login", {
-            userName: userName,
+            userName,
             password: "",
-            loginError: invalidPasswordErrorMessage
             //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
-            // loginError: errorMessage
+            loginError
 
           });
         }
@@ -93,36 +89,28 @@ function SessionHandler(db) {
     });
   };
 
-  this.displayLogoutPage = function (req, res, next) {
-    req.session.destroy(function () {
-      res.redirect("/");
-    });
-  };
+  this.displayLogoutPage = (req, res, next) => req.session.destroy(() => res.redirect("/"));
 
-  this.displaySignupPage = function (req, res, next) {
-    res.render("signup", {
-      userName: "",
-      password: "",
-      passwordError: "",
-      email: "",
-      userNameError: "",
-      emailError: "",
-      verifyError: ""
-    });
-  };
+  this.displaySignupPage = (req, res, next) => res.render("signup", {
+    userName: "",
+    password: "",
+    passwordError: "",
+    email: "",
+    userNameError: "",
+    emailError: "",
+    verifyError: ""
+  });
 
   function validateSignup(userName, firstName, lastName, password, verify, email, errors) {
-
     const USER_RE = /^.{1,20}$/;
     const FNAME_RE = /^.{1,100}$/;
     const LNAME_RE = /^.{1,100}$/;
     const EMAIL_RE = /^[\S]+@[\S]+\.[\S]+$/;
-    const PASS_RE = /^.{1,20}$/;
     /*
      //Fix for A2-2 - Broken Authentication -  requires stronger password
      //(at least 8 characters with numbers and both lowercase and uppercase letters.)
-     var PASS_RE =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
      */
+    const PASS_RE =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
     errors.userNameError = "";
     errors.firstNameError = "";
@@ -145,8 +133,8 @@ function SessionHandler(db) {
       return false;
     }
     if (!PASS_RE.test(password)) {
-      errors.passwordError = "Password must be 8 to 18 characters" +
-        " including numbers, lowercase and uppercase letters.";
+      errors.passwordError = `Password must be 8 to 18 characters
+      including numbers, lowercase and uppercase letters.`;
       return false;
     }
     if (password !== verify) {
@@ -163,7 +151,6 @@ function SessionHandler(db) {
   }
 
   this.handleSignup = (req, res, next) => {
-
     const email = req.body.email;
     const userName = req.body.userName;
     const firstName = req.body.firstName;
@@ -172,10 +159,7 @@ function SessionHandler(db) {
     const verify = req.body.verify;
 
     // set these up in case we have an error case
-    const errors = {
-      "userName": userName,
-      "email": email
-    };
+    const errors = { userName, email };
 
     if (validateSignup(userName, firstName, lastName, password, verify, email, errors)) {
       return userDAO.getUserByUserName(userName, (err, user) => {
