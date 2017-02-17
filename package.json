@@ -11,6 +11,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.1",
     "consolidate": "^0.14.1",
+    "cookie-parser": "^1.4.3",
     "csurf": "^1.8.3",
     "dont-sniff-mimetype": "^1.0.0",
     "express": "^4.13.4",
@@ -31,13 +32,14 @@
     "npm": "2.15.x"
   },
   "scripts": {
+    "dev": "nodemon lib/server.js --exec babel-node",
     "postinstall": "npm run build",
     "prestart": "npm run build",
     "start": "node dist/server.js",
     "build": "babel lib -d dist && babel app/data -d dist/app/data && babel app/routes -d dist/app/routes",
-    "dev": "nodemon lib/server.js --exec babel-node",
     "test": "babel-node node_modules/grunt-cli/bin/grunt test",
-    "dbreset": "npm run build && babel-node node_modules/grunt-cli/bin/grunt db-reset:development"
+    "dbreset": "npm run build && babel-node node_modules/grunt-cli/bin/grunt db-reset:development",
+    "heroku": "./node_modules/.bin/forever -m 5 dist/server.js"
   },
   "devDependencies": {
     "async": "^2.0.0-rc.4",
