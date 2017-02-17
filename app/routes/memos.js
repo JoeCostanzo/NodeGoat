@@ -1,30 +1,26 @@
-var MemosDAO = require("../data/memos-dao").MemosDAO;
+import { MemosDAO } from "../data/memos-dao";
 
 function MemosHandler(db) {
   "use strict";
 
-  var memosDAO = new MemosDAO(db);
+  const memosDAO = new MemosDAO(db);
 
-  this.addMemos = function(req, res, next) {
-    memosDAO.insert(req.body.memo, function(err, docs) {
+  this.addMemos = (req, res, next) => {
+    memosDAO.insert(req.body.memo, (err, docs) => {
       if (err) return next(err);
 
-      memosDAO.getAllMemos(function(err, docs) {
+      memosDAO.getAllMemos((err, memosList) => {
         if (err) return next(err);
-        return res.render("memos", {
-          memosList: docs
-        });
+        return res.render("memos", { memosList });
       });
 
     });
   };
 
-  this.displayMemos = function(req, res, next) {
-    memosDAO.getAllMemos(function(err, docs) {
+  this.displayMemos = (req, res, next) => {
+    memosDAO.getAllMemos((err, memosList) => {
       if (err) return next(err);
-      return res.render("memos", {
-        memosList: docs
-      });
+      return res.render("memos", { memosList });
     });
   };
 
