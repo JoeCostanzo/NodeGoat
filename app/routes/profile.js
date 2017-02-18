@@ -26,6 +26,15 @@ function ProfileHandler(db) {
     const address = req.body.address;
     const bankAcc = req.body.bankAcc;
     const bankRouting = req.body.bankRouting;
+    const errorMsgSuffix = ' does not comply with requirements for format specified. Please try again.';
+
+    const namesRegexPattern = /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u;
+    // Allow only valid names (international ok)
+    // if the regex test fails we do not allow saving
+    // This will further help to prevent scripting attacks via not allowing chars like '<' where they shouldn't be.
+    if (namesRegexPattern.test(firstName) !== true || namesRegexPattern.test(lastName) !== true) {
+      return res.render("profile", {updateError: `Name${errorMsgSuffix}`})
+    }
 
     // Fix for Section: ReDoS attack
     // The following regexPattern that is used to validate the bankRouting number is insecure and vulnerable to
@@ -33,16 +42,12 @@ function ProfileHandler(db) {
     // with an exponential time until it completes
     // --
     // The Fix: Instead of using greedy quantifiers the same regex will work if we omit the second quantifier +
-    // const regexPattern = /([0-9]+)\#/;
-    const regexPattern = /([0-9]+)+\#/;
+    // const bankRouteRegexPattern = /([0-9]+)\#/;
+    const bankRouteRegexPattern = /([0-9]+)+\#/;
     // Allow only numbers with a suffix of the letter #, for example: 'XXXXXX#'
-    const testComplyWithRequirements = regexPattern.test(bankRouting);
     // if the regex test fails we do not allow saving
-    if (testComplyWithRequirements !== true) {
-      return res.render("profile", {
-          updateError: 'Bank Routing number does not comply with requirements for format specified'
-        }
-      )
+    if (bankRouteRegexPattern.test(bankRouting) !== true) {
+      return res.render("profile", {updateError: `Bank Routing number${errorMsgSuffix}`})
     }
 
     const userId = req.session.userId;
