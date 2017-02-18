@@ -1,19 +1,15 @@
-var AllocationsDAO = require("../data/allocations-dao").AllocationsDAO;
+import { AllocationsDAO } from "../data/allocations-dao";
 
 function AllocationsHandler(db) {
     "use strict";
 
-    var allocationsDAO = new AllocationsDAO(db);
+    const allocationsDAO = new AllocationsDAO(db);
 
-
-    this.displayAllocations = function(req, res, next) {
-        /*
+    this.displayAllocations = (req, res, next) => {
         // Fix for A4 Insecure DOR -  take user id from session instead of from URL param
-        var userId = req.session.userId;
-        */
-        var userId = req.params.userId;
+        const userId = req.session.userId;
 
-        allocationsDAO.getByUserId(userId, function(err, docs) {
+        allocationsDAO.getByUserId(userId, (err, docs) => {
             if (err) return next(err);
 
             docs.userId = userId; //set for nav menu items
@@ -22,12 +18,12 @@ function AllocationsHandler(db) {
         });
     };
 
-    this.displayAllocationsThreshold = function(req, res, next) {
+    this.displayAllocationsThreshold = (req, res, next) => {
 
-        var userId = req.session.userId;
-        var threshold = req.query.threshold || 0;
+        const userId = req.session.userId;
+        const threshold = req.query.threshold || 0;
 
-        allocationsDAO.getThresholdByUserId(userId, threshold, function(err, docs) {
+        allocationsDAO.getThresholdByUserId(userId, threshold, (err, docs) => {
 
             if (err) return next(err);
 
