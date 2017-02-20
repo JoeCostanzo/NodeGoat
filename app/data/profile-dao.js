@@ -1,3 +1,7 @@
+// Use crypto module to save sensitive data such as ssn, dob in encrypted format
+import crypto from "crypto";
+import config from "./../../dist/config/config";
+
 /* The ProfileDAO must be constructed with a connected database object */
 function ProfileDAO(db) {
 
@@ -13,10 +17,6 @@ function ProfileDAO(db) {
   const users = db.collection("users");
 
   // Fix for A6 - Sensitive Data Exposure
-
-  // Use crypto module to save sensitive data such as ssn, dob in encrypted format
-  import crypto from "crypto";
-  import config from "./../../dist/config/config";
 
   // Helper function to encrypt data
   const encrypt = toEncrypt => {
