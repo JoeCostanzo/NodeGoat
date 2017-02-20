@@ -1,50 +1,44 @@
-var BenefitsDAO = require("../data/benefits-dao").BenefitsDAO;
+import { BenefitsDAO } from "../data/benefits-dao";
 
 function BenefitsHandler(db) {
-    "use strict";
+  "use strict";
 
-    var benefitsDAO = new BenefitsDAO(db);
+  const benefitsDAO = new BenefitsDAO(db);
 
-    this.displayBenefits = function(req, res, next) {
+  this.displayBenefits = (req, res, next) => {
 
-        benefitsDAO.getAllNonAdminUsers(function(error, users) {
+    benefitsDAO.getAllNonAdminUsers((error, users) => {
+      if (error) return next(error);
 
-            if (error) return next(error);
+      return res.render("benefits", {
+        users,
+        user: {isAdmin: true}
+      });
+    });
+  };
 
-            return res.render("benefits", {
-                users: users,
-                user: {
-                    isAdmin: true
-                }
-            });
-        });
-    };
+  this.updateBenefits = (req, res, next) => {
+    const userId = req.body.userId;
+    const benefitStartDate = req.body.benefitStartDate;
 
-    this.updateBenefits = function(req, res, next) {
-        var userId = req.body.userId;
-        var benefitStartDate = req.body.benefitStartDate;
+    benefitsDAO.updateBenefits(userId, benefitStartDate, (error) => {
+      if (error) return next(error);
 
-        benefitsDAO.updateBenefits(userId, benefitStartDate, function(error) {
+      benefitsDAO.getAllNonAdminUsers((error, users) => {
+        let data;
 
-            if (error) return next(error);
+        if (error) return next(error);
 
-            benefitsDAO.getAllNonAdminUsers(function(error, users) {
-                var data;
+        data = {
+          users,
+          user: {isAdmin: true},
+          updateSuccess: true
+        };
 
-                if (error) return next(error);
-
-                data = {
-                    users: users,
-                    user: {
-                        isAdmin: true
-                    },
-                    updateSuccess: true
-                };
-
-                return res.render("benefits", data);
-            });
-        });
-    };
+        return res.render("benefits", data);
+      });
+    });
+  };
 }
 
 module.exports = BenefitsHandler;
