@@ -1,6 +1,5 @@
 /* The MemosDAO must be constructed with a connected database object */
 function MemosDAO(db) {
-
   "use strict";
 
   /* If this constructor is called without the "new" operator, "this" points
@@ -10,18 +9,16 @@ function MemosDAO(db) {
     return new MemosDAO(db);
   }
 
-  var memosCol = db.collection("memos");
+  const memosCol = db.collection("memos");
 
-  this.insert = function(memo, callback) {
-
+  this.insert = (memo, callback) => {
     // Create allocations document
-    var memos = {
-      memo: memo,
+    const memos = {
+      memo,
       timestamp: new Date()
     };
 
-    memosCol.insert(memos, function(err, result) {
-
+    memosCol.insert(memos, (err, result) => {
       if (!err) {
         return callback(null, result);
       }
@@ -30,16 +27,17 @@ function MemosDAO(db) {
     });
   };
 
-  this.getAllMemos = function(callback) {
+  this.getAllMemos = callback =>
+    memosCol
+      .find({})
+      .sort({timestamp: -1})
+      .toArray((err, memos) => {
+        if (err) return callback(err, null);
+        if (!memos) return callback("ERROR: No memos found", null);
 
-    memosCol.find({}).sort({timestamp: -1}).toArray(function(err, memos) {
-      if (err) return callback(err, null);
-      if (!memos) return callback("ERROR: No memos found", null);
+        callback(null, memos);
 
-      callback(null, memos);
-
-    });
-  };
+      });
 
 }
 
