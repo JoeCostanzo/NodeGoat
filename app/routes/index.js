@@ -58,8 +58,9 @@ const exports = (app, db) => {
   app.get("/allocations/:userId", isLoggedIn, allocationsHandler.displayAllocations);
   app.get("/allocations-threshold", isLoggedIn, allocationsHandler.displayAllocationsThreshold);
 
-  // Handle redirect for learning resources link
-  app.get("/learn", isLoggedIn, (req, res, next) => res.redirect(req.query.url)); // Insecure way to handle redirects by taking redirect url from query string
+  // Fix for A10; Handle redirect for learning resources link withOUT using url param.
+  app.get("/learn", isLoggedIn, (req, res, next) =>
+    res.redirect("https://www.khanacademy.org/economics-finance-domain/core-finance/investment-vehicles-tutorial/ira-401ks/v/traditional-iras"));
 
   // Handle redirect for learning resources link
   app.get("/tutorial", (req, res, next) => res.render("tutorial/a1"));
