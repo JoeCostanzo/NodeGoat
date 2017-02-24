@@ -1,6 +1,5 @@
 # Joe's NodeGoat
 My attempt to effectively address the OWASP Top 10 security risks applied to a web application developed using Node.js.
-WIP, not 100% complete. (2/17/2017)
 
 ## Learn More
 This project references the OWASP Top 10 for Node.js web applications
@@ -15,6 +14,6 @@ This project references the OWASP Top 10 for Node.js web applications
 ## This repo
 This repo is a demonstration of my refactoring and web app security skills.
 
-Herein I have made the 'vulnerable web app' more secure and hardened (with a bonus of more updated syntax, following more canonicalized coding standards).
+Herein I have made the 'vulnerable web app' more secure and hardened (with added enhancements around syntax updates, following more canonical / modern coding standards, style, and patterns).
 
 It uses standard NodeJS / NPM patterns to run, and is deployed at the link above using Heroku.
