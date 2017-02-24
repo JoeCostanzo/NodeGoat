@@ -66,6 +66,9 @@ const exports = (app, db) => {
   app.get("/tutorial", (req, res, next) => res.render("tutorial/a1"));
   app.get("/tutorial/:page", (req, res, next) => res.render("tutorial/" + req.params.page));
 
+  // Enable wake my dynos
+  app.get('/wakemydyno.txt', (req, res) => res.send(''));
+
   // Error handling middleware
   app.use(errorHandler);
 };
